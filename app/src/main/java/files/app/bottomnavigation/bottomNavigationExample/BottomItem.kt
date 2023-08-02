@@ -1,4 +1,4 @@
-package files.app.bottomnavigation.BottomNavigationExample
+package files.app.bottomnavigation.bottomNavigationExample
 
 import files.app.bottomnavigation.R
 

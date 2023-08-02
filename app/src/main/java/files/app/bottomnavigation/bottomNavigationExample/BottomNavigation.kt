@@ -1,4 +1,4 @@
-package files.app.bottomnavigation.BottomNavigationExample
+package files.app.bottomnavigation.bottomNavigationExample
 
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon

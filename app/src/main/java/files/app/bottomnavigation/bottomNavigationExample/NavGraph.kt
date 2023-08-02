@@ -1,4 +1,4 @@
-package files.app.bottomnavigation.BottomNavigationExample
+package files.app.bottomnavigation.bottomNavigationExample
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController

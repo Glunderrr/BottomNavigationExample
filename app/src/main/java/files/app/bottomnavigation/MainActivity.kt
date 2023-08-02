@@ -3,8 +3,7 @@ package files.app.bottomnavigation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import files.app.bottomnavigation.BottomNavigationExample.MainBottomBarScreen
-import files.app.bottomnavigation.TopNavigationBar.MainTopBarScreen
+import files.app.bottomnavigation.topNavigationBar.MainTopBarScreen
 import files.app.bottomnavigation.ui.theme.BottomNavigationTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +12,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             BottomNavigationTheme {
                 MainTopBarScreen()
-                MainBottomBarScreen()
             }
         }
     }

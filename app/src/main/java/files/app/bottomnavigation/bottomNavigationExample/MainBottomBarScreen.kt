@@ -1,4 +1,4 @@
-package files.app.bottomnavigation.BottomNavigationExample
+package files.app.bottomnavigation.bottomNavigationExample
 
 import android.annotation.SuppressLint
 import androidx.compose.material3.ExperimentalMaterial3Api
