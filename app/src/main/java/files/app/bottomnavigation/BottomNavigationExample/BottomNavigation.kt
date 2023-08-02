@@ -1,4 +1,4 @@
-package files.app.bottomnavigation.Navigation
+package files.app.bottomnavigation.BottomNavigationExample
 
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
@@ -36,10 +36,10 @@ fun MyBottomNavigation(
                 icon = {
                     Icon(
                         painter = painterResource(screen.iconID),
-                        contentDescription = "Img"
+                        contentDescription = "Img",
                     )
                 }, label = {
-                    Text(text = screen.item)
+                    Text(text = screen.item,color = Color.Black)
                 },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = Purple80,
