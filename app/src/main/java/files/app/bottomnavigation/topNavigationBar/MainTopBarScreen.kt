@@ -3,6 +3,7 @@ package files.app.bottomnavigation.topNavigationBar
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,6 +43,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
+import files.app.bottomnavigation.bottomNavigationExample.MyBottomNavigation
+import files.app.bottomnavigation.bottomNavigationExample.NavGraph
+import files.app.bottomnavigation.ui.theme.Purple40
 import files.app.bottomnavigation.ui.theme.PurpleGrey40
 import kotlinx.coroutines.launch
 
@@ -52,87 +57,94 @@ fun MainTopBarScreen() {
     val coroutineScope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Menu", color = Color.Black) },
-                colors = TopAppBarDefaults.largeTopAppBarColors(containerColor = Color.White),
-                navigationIcon = {
-                    IconButton(onClick = {
-                        coroutineScope.launch {
-                            Log.d("Start_Menu_State", "state:${drawerState.currentValue}")
-                            if (drawerState.isOpen) drawerState.close()
-                            else drawerState.open()
-                            Log.d("End_Menu_State", "state:${drawerState.currentValue}")
+    val navController = rememberNavController()
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet {
+                DrawerHeader()
+                DrawerBody()
+            }
+        }, content = {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text("Menu", color = Color.Black) },
+                        colors = TopAppBarDefaults.largeTopAppBarColors(containerColor = Color.White),
+                        navigationIcon = {
+                            IconButton(onClick = {
+                                coroutineScope.launch {
+                                    Log.d("Start_Menu_State", "state:${drawerState.currentValue}")
+                                    if (drawerState.isOpen) drawerState.close()
+                                    else drawerState.open()
+                                    Log.d("End_Menu_State", "state:${drawerState.currentValue}")
+                                }
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Menu,
+                                    contentDescription = "Menu",
+                                    tint = Color.Black,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            }
+                        },
+                        actions = {
+                            IconButton(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        val result =
+                                            showSnackBar(
+                                                snackBarHostState,
+                                                "Delete Element",
+                                                "Undone"
+                                            )
+                                        if (result) {
+                                            showSnackBar(snackBarHostState, "Element recovered")
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Delete,
+                                    contentDescription = "Delete",
+                                    tint = Color.Black,
+                                )
+                            }
+                            IconButton(onClick = {}) {
+                                Icon(
+                                    imageVector = Icons.Filled.AddCircle,
+                                    contentDescription = "AddCircle",
+                                    tint = Color.Black,
+                                )
+                            }
+                            IconButton(onClick = {}) {
+                                Icon(
+                                    imageVector = Icons.Filled.Share,
+                                    contentDescription = "AddCircle",
+                                    tint = Color.Black,
+                                )
+                            }
                         }
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "Menu",
-                            tint = Color.Black,
-                            modifier = Modifier.size(30.dp)
+                    )
+                },
+                snackbarHost = {
+                    SnackbarHost(hostState = snackBarHostState) {
+                        Snackbar(
+                            snackbarData = it,
+                            modifier = Modifier.padding(20.dp),
+                            containerColor = PurpleGrey40,
+                            actionColor = Color.White,
+                            shape = RoundedCornerShape(20.dp),
+                            contentColor = Color.LightGray
                         )
                     }
                 },
-                actions = {
-                    IconButton(
-                        onClick = {
-                            coroutineScope.launch {
-                                val result =
-                                    showSnackBar(snackBarHostState, "Delete Element", "Undone")
-                                if (result) {
-                                    showSnackBar(snackBarHostState, "Element recovered")
-                                }
-                            }
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Delete,
-                            contentDescription = "Delete",
-                            tint = Color.Black,
-                        )
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.Filled.AddCircle,
-                            contentDescription = "AddCircle",
-                            tint = Color.Black,
-                        )
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.Filled.Share,
-                            contentDescription = "AddCircle",
-                            tint = Color.Black,
-                        )
-                    }
-                }
+                content = {
+                    NavGraph(navHostController = navController)
+                },
+                bottomBar = { MyBottomNavigation(navController) }
             )
-        },
-        snackbarHost = {
-            SnackbarHost(hostState = snackBarHostState) {
-                Snackbar(
-                    snackbarData = it,
-                    modifier = Modifier.padding(20.dp),
-                    containerColor = PurpleGrey40,
-                    actionColor = Color.White,
-                    shape = RoundedCornerShape(20.dp),
-                    contentColor = Color.LightGray
-                )
-            }
-        },
-    ) {
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            drawerContent = {
-                Log.d("ModalNavigationDrawer_Menu_State", "done")
-                ModalDrawerSheet(modifier = Modifier.padding(top = it.calculateTopPadding())) {
-                    DrawerHeader()
-                    DrawerBody()
-                }
-            }, content = {}
-        )
-    }
+        })
 }
 
 
