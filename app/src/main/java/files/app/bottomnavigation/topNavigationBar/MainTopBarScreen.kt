@@ -1,17 +1,28 @@
 package files.app.bottomnavigation.topNavigationBar
 
 import android.annotation.SuppressLint
+import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
@@ -21,13 +32,16 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import files.app.bottomnavigation.ui.theme.PurpleGrey40
 import kotlinx.coroutines.launch
 
@@ -37,13 +51,21 @@ import kotlinx.coroutines.launch
 fun MainTopBarScreen() {
     val coroutineScope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Menu", color = Color.Black) },
                 colors = TopAppBarDefaults.largeTopAppBarColors(containerColor = Color.White),
                 navigationIcon = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        coroutineScope.launch {
+                            Log.d("Start_Menu_State", "state:${drawerState.currentValue}")
+                            if (drawerState.isOpen) drawerState.close()
+                            else drawerState.open()
+                            Log.d("End_Menu_State", "state:${drawerState.currentValue}")
+                        }
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.Menu,
                             contentDescription = "Menu",
@@ -98,8 +120,19 @@ fun MainTopBarScreen() {
                     contentColor = Color.LightGray
                 )
             }
-        }
-    ) {}
+        },
+    ) {
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                Log.d("ModalNavigationDrawer_Menu_State", "done")
+                ModalDrawerSheet(modifier = Modifier.padding(top = it.calculateTopPadding())) {
+                    DrawerHeader()
+                    DrawerBody()
+                }
+            }, content = {}
+        )
+    }
 }
 
 
@@ -124,4 +157,31 @@ suspend fun showSnackBar(
         message = message,
         duration = SnackbarDuration.Short
     )
+}
+
+
+@Composable
+fun DrawerHeader() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(170.dp)
+            .background(Color.Yellow),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = "Header", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Composable
+fun DrawerBody() {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(20) {
+            Text(
+                modifier = Modifier.padding(20.dp),
+                text = "Menu item ${it + 1}"
+            )
+        }
+    }
 }
